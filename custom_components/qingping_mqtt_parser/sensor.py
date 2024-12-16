@@ -109,9 +109,9 @@ class SensorBase(Entity):
         if self.device_class==SensorDeviceClass.BATTERY:
             return self._qp_device.battery_level
         elif self.device_class==SensorDeviceClass.TEMPERATURE:
-            if self._temperatureType == INDOOR_TEMPERATURE:
+            if self.temperatureType == INDOOR_TEMPERATURE:
                 return self._qp_device.temperature
-            elif self._temperatureType == PROBE_TEMPERATURE:
+            elif self.temperatureType == PROBE_TEMPERATURE:
                 return self._qp_device.prob_temperature 
         elif self.device_class==SensorDeviceClass.HUMIDITY:
             return self._qp_device.humidity
