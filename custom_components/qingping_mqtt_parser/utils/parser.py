@@ -52,8 +52,8 @@ def parse_real_sensor_data(real_sensor_data):
     result["temperature"] = temperature
     humidity = (combined_data & 0x000fff) / 10
     result["humidity"] = humidity
-    co2_ppm = real_sensor_data[3] | (real_sensor_data[4] << 8)
-    result["co2_ppm"] = co2_ppm
+    # co2_ppm = real_sensor_data[3] | (real_sensor_data[4] << 8)
+    # result["co2_ppm"] = co2_ppm
     battery = real_sensor_data[5]
     result["battery"] = battery
 

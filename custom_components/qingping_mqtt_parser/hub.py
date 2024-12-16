@@ -271,7 +271,7 @@ class Qingping:
             return self.data['sensor']['battery']
 
     @property
-    def prob_temperature(self) -> int:
+    def prob_temperature(self) -> float:
         if self.data:
             return self.data['sensor']['prob_temperature']
 

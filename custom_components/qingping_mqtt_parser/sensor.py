@@ -12,6 +12,10 @@ from .const import DOMAIN
 from typing import Any
 from homeassistant.util.unit_system import TEMPERATURE_UNITS
 
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
 DC_STATUS = SensorDeviceClass.ENUM
 
 INDOOR_TEMPERATURE = "temp"
@@ -44,6 +48,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             
             # debug thing
             new_devices.append(SensorBase(qp, DC_STATUS))
+
+
+    _LOGGER.info("new_devices")
+    _LOGGER.info(new_devices)
 
     if new_devices:
         async_add_entities(new_devices)
