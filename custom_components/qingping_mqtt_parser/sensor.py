@@ -37,7 +37,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     for tempType in tempTypes:
                         if qp.is_supported(c, tempType):
                             new_devices.append(SensorBase(qp, c, tempType))
-                elif qp.is_supported(c):
+                elif qp.is_supported(c, tempType):
                     new_devices.append(SensorBase(qp, c, None))
 
             new_devices.append(SensorBase(qp, DC_STATUS))
