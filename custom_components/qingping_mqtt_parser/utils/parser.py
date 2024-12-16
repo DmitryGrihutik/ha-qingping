@@ -32,7 +32,8 @@ DataKey = [
     "temperatureOffset",
     "temperatureOffsetPercentage",
     "humidityOffset",
-    "humidityOffsetPercentage"
+    "humidityOffsetPercentage",
+    "prob_temperature"
 ]
 
 def datetime_human(timestamp):
@@ -56,6 +57,11 @@ def parse_real_sensor_data(real_sensor_data):
     battery = real_sensor_data[5]
     result["battery"] = battery
 
+    probTemperatureValue = ((real_sensor_data[4] & 0x0F) << 8) | real_sensor_data[3];
+    result["prob_temperature"] = probTemperatureValue
+
+    _LOGGER.info("RESULT SENSOR DATA")
+    _LOGGER.info(result)
     return result
 
 
