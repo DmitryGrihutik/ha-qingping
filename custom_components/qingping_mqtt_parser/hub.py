@@ -92,7 +92,6 @@ class Hub:
             await client.subscribe(topic)
             async for message in client.messages:
                 r = decode_mqqt_message.decode(message.topic, message.payload)
-                print(f"MESSAGE {r}")
                 if r:
                     a = r['addr']
                     if a not in self.devices:
@@ -231,7 +230,7 @@ class Qingping:
     @property
     def model(self) -> str:
         if self.data:
-            return f"{self.data['productId']} - {self.addr}",
+            return f"{self.data['_header']} - {self.addr}",
 
     @property
     def firmware_version(self) -> str:
