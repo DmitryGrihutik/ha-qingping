@@ -10,16 +10,12 @@ from homeassistant.helpers.entity import Entity
 from .hub import Qingping
 from .const import DOMAIN
 from typing import Any
-import enum
 from homeassistant.util.unit_system import TEMPERATURE_UNITS
 
 DC_STATUS = SensorDeviceClass.ENUM
 
-PROB_TEMPERATURE = SensorDeviceClass.TEMPERATURE
-
-class TemperatureType(enum.Enum):
-    temperature = "temp"
-    probe_temperature = "probe_temp"
+INDOOR_TEMPERATURE = "temp"
+PROBE_TEMPERATURE = "probe_temp"
 
 # See cover.py for more details.
 # Note how both entities for each roller sensor (battry and illuminance) are added at
@@ -34,12 +30,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         if not qp.sensors_created:
             sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY]
-            tempTypes = [TemperatureType.temperature, TemperatureType.probe_temperature]
+            tempTypes = [INDOOR_TEMPERATURE, PROBE_TEMPERATURE]
 
             for c in sdc:
                 if c == SensorDeviceClass.TEMPERATURE:
                     for tempType in tempTypes:
-                        if qp.is_supported(c):
+                        if qp.is_supported(c, tempType):
                             new_devices.append(SensorBase(qp, c, tempType))
                 elif qp.is_supported(c):
                     new_devices.append(SensorBase(qp, c, None))
@@ -63,6 +59,7 @@ class SensorBase(Entity):
         """Initialize the sensor."""
         self._qp_device         = qp_device
 
+        self._temperatureType = temperatureType
         self._attr_device_class = device_class
         self._attr_unique_id    = f"{qp_device.id}_{device_class}"
         self._attr_name         = f"{qp_device.name} {device_class}"    
@@ -112,7 +109,10 @@ class SensorBase(Entity):
         if self.device_class==SensorDeviceClass.BATTERY:
             return self._qp_device.battery_level
         elif self.device_class==SensorDeviceClass.TEMPERATURE:
-            return self._qp_device.temperature
+            if self._temperatureType == INDOOR_TEMPERATURE:
+                return self._qp_device.temperature
+            elif self._temperatureType == PROBE_TEMPERATURE:
+                return self._qp_device.prob_temperature 
         elif self.device_class==SensorDeviceClass.HUMIDITY:
             return self._qp_device.humidity
         # elif self.device_class==SensorDeviceClass.CO2:
