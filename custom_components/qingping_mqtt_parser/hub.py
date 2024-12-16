@@ -18,6 +18,9 @@ from homeassistant.components.sensor import (
     SensorDeviceClass
 )
 
+import enum
+from .sensor import TemperatureType
+
 import aiomqtt
 from . import decode_mqqt_message
 from .const import DOMAIN, PLATFORMS
@@ -201,14 +204,17 @@ class Qingping:
             #print(data['_header'])
             pass
 
-    def is_supported(self, device_class: SensorDeviceClass) -> bool:
+    def is_supported(self, device_class: SensorDeviceClass, temperatureType) -> bool:
         if 'sensor' not in self.data:
             return False
 
         if device_class==SensorDeviceClass.BATTERY:
             return 'battery' in self.data['sensor']
         elif device_class==SensorDeviceClass.TEMPERATURE:
-            return 'temperature' in self.data['sensor']
+            if temperatureType == TemperatureType.temperature:
+                return 'temperature' in self.data['sensor']
+            elif temperatureType == TemperatureType.probe_temperature:
+                return 'prob_temperature' in self.data['sensor']
         elif device_class==SensorDeviceClass.HUMIDITY:
             return 'humidity' in self.data['sensor']
         elif device_class==SensorDeviceClass.CO2:
@@ -266,6 +272,11 @@ class Qingping:
     def battery_level(self) -> int:
         if self.data:
             return self.data['sensor']['battery']
+
+    @property
+    def prob_temperature(self) -> int:
+        if self.data:
+            return self.data['sensor']['prob_temperature']
 
     @property
     def temperature(self) -> float:

@@ -57,8 +57,11 @@ def parse_real_sensor_data(real_sensor_data):
     battery = real_sensor_data[5]
     result["battery"] = battery
 
-    probTemperatureValue = ((real_sensor_data[4] & 0x0F) << 8) | real_sensor_data[3];
-    result["prob_temperature"] = probTemperatureValue
+    probTemperatureTempValue = ((real_sensor_data[4] & 0x0F) << 8) | real_sensor_data[3];
+    if (probValue & 0x0FFF) != 0xFFF:
+        probTemperatureFinalValue = (probTemperatureTempValue - 500) / 10
+
+    result["prob_temperature"] = probTemperatureFinalValue
 
     _LOGGER.info("RESULT SENSOR DATA")
     _LOGGER.info(result)
