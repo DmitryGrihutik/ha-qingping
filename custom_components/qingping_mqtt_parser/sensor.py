@@ -44,10 +44,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 elif qp.is_supported(c, None):
                     new_devices.append(SensorBase(qp, c, None))
 
-            new_devices.append(SensorBase(qp, DC_STATUS))
-            
             # debug thing
-            new_devices.append(SensorBase(qp, DC_STATUS))
+            new_devices.append(SensorBase(qp, DC_STATUS, None))
 
 
     _LOGGER.info("new_devices")
