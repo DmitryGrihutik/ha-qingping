@@ -18,6 +18,10 @@ from homeassistant.components.sensor import (
     SensorDeviceClass
 )
 
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass
+)
+
 import aiomqtt
 from . import decode_mqqt_message
 from .const import DOMAIN, PLATFORMS
@@ -216,6 +220,8 @@ class Qingping:
             return 'humidity' in self.data['sensor']
         elif device_class==SensorDeviceClass.CO2:
             return 'co2_ppm' in self.data['sensor']
+        elif device_class==BinarySensorDeviceClass.POWER:
+            return 'isPluggedInToPower' in self.data
         else:
             return False
 
@@ -295,3 +301,8 @@ class Qingping:
     def humidity(self) -> float:
         if self.data:
             return self.data['sensor']['humidity']
+
+    @property
+    def isPluggedInToPower(self) -> bool:
+        return self.data['isPluggedInToPower']
+    
