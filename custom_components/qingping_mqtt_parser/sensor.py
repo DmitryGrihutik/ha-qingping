@@ -10,9 +10,16 @@ from homeassistant.helpers.entity import Entity
 from .hub import Qingping
 from .const import DOMAIN
 from typing import Any
+import enum
 from homeassistant.util.unit_system import TEMPERATURE_UNITS
 
 DC_STATUS = SensorDeviceClass.ENUM
+
+PROB_TEMPERATURE = SensorDeviceClass.TEMPERATURE
+
+class TemperatureType(enum.Enum):
+    temperature = "temp"
+    probe_temperature = "probe_temp"
 
 # See cover.py for more details.
 # Note how both entities for each roller sensor (battry and illuminance) are added at
@@ -26,12 +33,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for mac, qp in hub.devices.items():
 
         if not qp.sensors_created:
-            sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY, SensorDeviceClass.CO2]
+            sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY]
+            tempTypes = [TemperatureType.temperature, TemperatureType.probe_temperature]
 
             for c in sdc:
-                if qp.is_supported(c):
-                    new_devices.append(SensorBase(qp, c))
+                if c == SensorDeviceClass.TEMPERATURE:
+                    for tempType in tempTypes:
+                        if qp.is_supported(c):
+                            new_devices.append(SensorBase(qp, c, tempType))
+                elif qp.is_supported(c):
+                    new_devices.append(SensorBase(qp, c, None))
 
+            new_devices.append(SensorBase(qp, DC_STATUS))
+            
             # debug thing
             new_devices.append(SensorBase(qp, DC_STATUS))
 
@@ -45,13 +59,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class SensorBase(Entity):
     should_poll  = False
 
-    def __init__(self, qp_device: Qingping, device_class):
+    def __init__(self, qp_device: Qingping, device_class, temperatureType):
         """Initialize the sensor."""
         self._qp_device         = qp_device
 
         self._attr_device_class = device_class
         self._attr_unique_id    = f"{qp_device.id}_{device_class}"
-        self._attr_name         = f"{qp_device.name} {device_class}"
+        self._attr_name         = f"{qp_device.name} {device_class}"    
 
         if device_class==DC_STATUS:
             self._attr_name = f"{qp_device.name} Status"
@@ -101,13 +115,13 @@ class SensorBase(Entity):
             return self._qp_device.temperature
         elif self.device_class==SensorDeviceClass.HUMIDITY:
             return self._qp_device.humidity
-        elif self.device_class==SensorDeviceClass.CO2:
-            return self._qp_device.co2_ppm
-        elif self.device_class==DC_STATUS:
-            if self._qp_device.co2IsBeingCalibrated:
-                return 'co2IsBeingCalibrated'
-            else:
-                return 'data in attributes'
+        # elif self.device_class==SensorDeviceClass.CO2:
+        #     return self._qp_device.co2_ppm
+        # elif self.device_class==DC_STATUS:
+        #     if self._qp_device.co2IsBeingCalibrated:
+        #         return 'co2IsBeingCalibrated'
+        #     else:
+        #         return 'data in attributes'
         else:
             return False
 
