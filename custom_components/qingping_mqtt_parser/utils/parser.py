@@ -1,5 +1,8 @@
 from . import parsekeys
 from datetime import datetime
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 DataKey = [
     "historicalData",
@@ -41,6 +44,8 @@ def parse_sensor_timestamp(sensor_data):
 def parse_real_sensor_data(real_sensor_data):
     result={}
 
+    _LOGGER.info(real_sensor_data)
+
     combined_data = real_sensor_data[0] | (real_sensor_data[1] << 8) | (real_sensor_data[2] << 16)
     temperature = ((combined_data >> 12) - 500.0) / 10.0
     result["temperature"] = temperature
@@ -76,6 +81,8 @@ def parse_history_sensor_data(sensor_data):
     return result
 
 def parse_data(input_bytes: bytearray):
+    _LOGGER.info(bytearray)
+
     data = parsekeys.parse_keys(input_bytes)
     exportable_data = {}
     exportable_data["_header"] = str(input_bytes)[2:5]
