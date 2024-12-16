@@ -67,11 +67,15 @@ class SensorBase(Entity):
 
         self._temperatureType = temperatureType
         self._attr_device_class = device_class
-        self._attr_unique_id    = f"{qp_device.id}_{device_class}"
-        self._attr_name         = f"{qp_device.name} {device_class}"    
+        if temperatureType != "":
+            self._attr_unique_id    = f"{qp_device.id}_{device_class}_{temperatureType}"
+            self._attr_name         = f"{qp_device.name} {device_class} {temperatureType}"
+        else:
+            self._attr_unique_id    = f"{qp_device.id}_{device_class}"
+            self._attr_name         = f"{qp_device.name} {device_class}"
 
-        if device_class==DC_STATUS:
-            self._attr_name = f"{qp_device.name} Status"
+        # if device_class==DC_STATUS:
+        #     self._attr_name = f"{qp_device.name} Status"
 
         #if device_class==SensorDeviceClass.TEMPERATURE:
         #    self._attr_unit_of_measurement
