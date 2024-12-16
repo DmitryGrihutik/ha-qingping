@@ -6,6 +6,10 @@ from homeassistant.const import (
     UnitOfTemperature
 )
 
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass
+)
+
 from homeassistant.helpers.entity import Entity
 from .hub import Qingping
 from .const import DOMAIN
@@ -33,7 +37,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for mac, qp in hub.devices.items():
 
         if not qp.sensors_created:
-            sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY]
+            sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY, BinarySensorDeviceClass.POWER]
             tempTypes = [INDOOR_TEMPERATURE, PROBE_TEMPERATURE]
 
             for c in sdc:
@@ -77,8 +81,8 @@ class SensorBase(Entity):
         # if device_class==DC_STATUS:
         #     self._attr_name = f"{qp_device.name} Status"
 
-        #if device_class==SensorDeviceClass.TEMPERATURE:
-        #    self._attr_unit_of_measurement
+        if device_classc == SensorDeviceClass.TEMPERATURE:
+            self._attr_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     # never called
     # @property
@@ -125,6 +129,8 @@ class SensorBase(Entity):
                 return self._qp_device.prob_temperature 
         elif self.device_class==SensorDeviceClass.HUMIDITY:
             return self._qp_device.humidity
+        elif device_class==BinarySensorDeviceClass.POWER:
+            return self._qp_device.isPluggedInToPower
         # elif self.device_class==SensorDeviceClass.CO2:
         #     return self._qp_device.co2_ppm
         # elif self.device_class==DC_STATUS:
