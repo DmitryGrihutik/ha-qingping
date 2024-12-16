@@ -43,7 +43,7 @@ def parse_sensor_timestamp(sensor_data):
 
 def parse_real_sensor_data(real_sensor_data):
     result={}
-
+    _LOGGER.info("real_sensor_data")
     _LOGGER.info(real_sensor_data)
 
     combined_data = real_sensor_data[0] | (real_sensor_data[1] << 8) | (real_sensor_data[2] << 16)
@@ -81,7 +81,8 @@ def parse_history_sensor_data(sensor_data):
     return result
 
 def parse_data(input_bytes: bytearray):
-    _LOGGER.info(bytearray)
+    _LOGGER.info("input_bytes")
+    _LOGGER.info(input_bytes)
 
     data = parsekeys.parse_keys(input_bytes)
     exportable_data = {}
