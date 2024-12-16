@@ -18,9 +18,6 @@ from homeassistant.components.sensor import (
     SensorDeviceClass
 )
 
-import enum
-from .sensor import TemperatureType
-
 import aiomqtt
 from . import decode_mqqt_message
 from .const import DOMAIN, PLATFORMS
@@ -211,9 +208,9 @@ class Qingping:
         if device_class==SensorDeviceClass.BATTERY:
             return 'battery' in self.data['sensor']
         elif device_class==SensorDeviceClass.TEMPERATURE:
-            if temperatureType == TemperatureType.temperature:
+            if temperatureType == "temp":
                 return 'temperature' in self.data['sensor']
-            elif temperatureType == TemperatureType.probe_temperature:
+            elif temperatureType == "probe_temp":
                 return 'prob_temperature' in self.data['sensor']
         elif device_class==SensorDeviceClass.HUMIDITY:
             return 'humidity' in self.data['sensor']
