@@ -37,7 +37,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for mac, qp in hub.devices.items():
 
         if not qp.sensors_created:
-            sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY, BinarySensorDeviceClass.POWER]
+            sdc = [SensorDeviceClass.BATTERY, SensorDeviceClass.TEMPERATURE, SensorDeviceClass.HUMIDITY]
             tempTypes = [INDOOR_TEMPERATURE, PROBE_TEMPERATURE]
 
             for c in sdc:
@@ -49,7 +49,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     new_devices.append(SensorBase(qp, c, ""))
 
             # debug thing
-            # new_devices.append(SensorBase(qp, DC_STATUS, ""))
+            new_devices.append(SensorBase(qp, DC_STATUS, ""))
 
 
     _LOGGER.info("new_devices")
@@ -78,22 +78,22 @@ class SensorBase(Entity):
             self._attr_unique_id    = f"{qp_device.id}_{device_class}"
             self._attr_name         = f"{qp_device.name} {device_class}"
 
-        # if device_class==DC_STATUS:
-        #     self._attr_name = f"{qp_device.name} Status"
+        if device_class == DC_STATUS:
+            self._attr_name = f"{qp_device.name} Status"
 
         if device_classc == SensorDeviceClass.TEMPERATURE:
             self._attr_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     # never called
-    # @property
-    # def native_unit_of_measurement(self):
-    #    if self.device_class==SensorDeviceClass.TEMPERATURE:
-    #        if self._qp_device.info:
-    #            if 'temperatureUnit' in self._qp_device.info:
-    #                if self._qp_device.info['temperatureUnit']=='celsius':
-    #                    return UnitOfTemperature.CELSIUS
-    #                else:
-    #                    return UnitOfTemperature.FAHRENHEIT
+    @property
+    def native_unit_of_measurement(self):
+       if self.device_class==SensorDeviceClass.TEMPERATURE:
+           if self._qp_device.info:
+               if 'temperatureUnit' in self._qp_device.info:
+                   if self._qp_device.info['temperatureUnit']=='celsius':
+                       return UnitOfTemperature.CELSIUS
+                   else:
+                       return UnitOfTemperature.FAHRENHEIT
 
     @property
     def device_info(self):
@@ -133,11 +133,11 @@ class SensorBase(Entity):
             return self._qp_device.isPluggedInToPower
         # elif self.device_class==SensorDeviceClass.CO2:
         #     return self._qp_device.co2_ppm
-        # elif self.device_class==DC_STATUS:
-        #     if self._qp_device.co2IsBeingCalibrated:
-        #         return 'co2IsBeingCalibrated'
-        #     else:
-        #         return 'data in attributes'
+        elif self.device_class==DC_STATUS:
+            if self._qp_device.isPluggedInToPower:
+                return 'isPluggedInToPower'
+            else:
+                return 'data in attributes'
         else:
             return False
 
