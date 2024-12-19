@@ -16,9 +16,9 @@ from .const import DOMAIN
 from typing import Any
 from homeassistant.util.unit_system import TEMPERATURE_UNITS
 
-import logging
+# import logging
 
-_LOGGER = logging.getLogger(__name__)
+# _LOGGER = logging.getLogger(__name__)
 
 DC_STATUS = SensorDeviceClass.ENUM
 
@@ -52,8 +52,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             # new_devices.append(SensorBase(qp, DC_STATUS, ""))
 
 
-    _LOGGER.info("new_devices")
-    _LOGGER.info(new_devices)
+    # _LOGGER.info("new_devices")
+    # _LOGGER.info(new_devices)
 
     if new_devices:
         async_add_entities(new_devices)
@@ -85,7 +85,7 @@ class SensorBase(Entity):
             self._attr_unit_of_measurement = UnitOfTemperature.CELSIUS
 
         if device_class == SensorDeviceClass.HUMIDITY:
-            self._attr_unit_of_measurement = '%'
+            self._attr_unit_of_measurement = ' %'
 
     # never called
     @property

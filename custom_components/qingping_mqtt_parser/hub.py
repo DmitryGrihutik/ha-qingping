@@ -304,6 +304,6 @@ class Qingping:
             return self.data['sensor']['humidity']
 
     @property
-    def isPluggedInToPower(self) -> bool:
-        return self.data['isPluggedInToPower']
+    def isPluggedInToPower(self) -> str:
+        return self.data['isPluggedInToPower'] ? 'USB' : 'Battery'
     
