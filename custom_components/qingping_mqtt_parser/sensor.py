@@ -81,7 +81,7 @@ class SensorBase(Entity):
         if device_class == DC_STATUS:
             self._attr_name = f"{qp_device.name} Status"
 
-        if device_classc == SensorDeviceClass.TEMPERATURE:
+        if device_class == SensorDeviceClass.TEMPERATURE:
             self._attr_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     # never called
