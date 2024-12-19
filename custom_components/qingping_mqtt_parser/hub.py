@@ -305,5 +305,6 @@ class Qingping:
 
     @property
     def isPluggedInToPower(self) -> str:
-        return self.data['isPluggedInToPower'] ? 'USB' : 'Battery'
+        powerStatus = 'USB' if self.data['isPluggedInToPower'] else 'Battery'
+        return powerStatus
     
