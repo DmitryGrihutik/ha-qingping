@@ -195,6 +195,7 @@ class Qingping:
                 'mcuFirmwareVersion': '2.0.0',
                 'temperature': 18.5,
                 'prob_temperature': 4.5,
+                'temperatureUnit': 'celsius',
                 'timestamp': 1708434246,
                 'unk_key_11': b'2.0.0',
                 'unk_key_14': b'F\xa3\xd4e\xd5\xd1*\xab\x03d\xcd\x00',
