@@ -1,6 +1,4 @@
 from .utils import parser
-import logging
-_LOGGER = logging.getLogger(__name__)
 
 def decode(topic, payload):
 
@@ -12,8 +10,6 @@ def decode(topic, payload):
             "addr": addr,
             "data": data,
         }
-
-        _LOGGER.info(r)
 
         return r
     except:
